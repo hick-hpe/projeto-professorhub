@@ -1,0 +1,136 @@
+{% extends 'planner/base.html' %}
+
+{% block title %}Dashboard - ProfessorHub{% endblock %}
+
+{% block page_title %}Visão Geral{% endblock %}
+
+{% block content %}
+<div class="row mb-4 animate__animated animate__fadeIn">
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card bg-primary text-white shadow-sm h-100 border-0">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title mb-0">Disciplinas Ativas</h5>
+                    <p class="card-text fs-4 fw-bold">5</p>
+                </div>
+                <i class="fas fa-book fa-3x opacity-50"></i>
+            </div>
+            <div class="card-footer bg-transparent border-top border-light opacity-75">
+                <a href="{% url 'disciplinas' %}" class="text-white text-decoration-none small">Ver detalhes <i class="fas fa-arrow-circle-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card bg-success text-white shadow-sm h-100 border-0">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title mb-0">Tarefas Pendentes</h5>
+                    <p class="card-text fs-4 fw-bold">8</p>
+                </div>
+                <i class="fas fa-tasks fa-3x opacity-50"></i>
+            </div>
+            <div class="card-footer bg-transparent border-top border-light opacity-75">
+                <a href="{% url 'tarefas' %}" class="text-white text-decoration-none small">Ver detalhes <i class="fas fa-arrow-circle-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card bg-info text-white shadow-sm h-100 border-0">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title mb-0">Avaliações Agendadas</h5>
+                    <p class="card-text fs-4 fw-bold">3</p>
+                </div>
+                <i class="fas fa-clipboard-list fa-3x opacity-50"></i>
+            </div>
+            <div class="card-footer bg-transparent border-top border-light opacity-75">
+                <a href="#" class="text-white text-decoration-none small">Ver detalhes <i class="fas fa-arrow-circle-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card bg-warning text-dark shadow-sm h-100 border-0">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title mb-0">Alunos Totais</h5>
+                    <p class="card-text fs-4 fw-bold">120</p>
+                </div>
+                <i class="fas fa-users fa-3x opacity-50"></i>
+            </div>
+            <div class="card-footer bg-transparent border-top border-dark opacity-75">
+                <a href="#" class="text-dark text-decoration-none small">Ver detalhes <i class="fas fa-arrow-circle-right ms-1"></i></a>
+            </div>
+        </div>
+    </div> -->
+</div>
+
+<div class="row mb-4 animate__animated animate__fadeIn">
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+                <h5 class="mb-0 text-primary"><i class="fas fa-calendar-alt me-2"></i>Calendário de Atividades</h5>
+                <div class="btn-group" role="group" aria-label="Calendar View Options">
+                    <button type="button" class="btn btn-outline-primary btn-sm active">Dia</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm">Semana</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm">Mês</button>
+                </div>
+            </div>
+            <div class="card-body" style="min-height: 500px;">
+                <p class="text-center text-muted py-5">
+                    <i class="fas fa-spinner fa-spin me-2"></i>Carregando seu calendário interativo...
+                </p>
+                <div id="fullcalendar-placeholder"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0 text-success"><i class="fas fa-clock me-2"></i>Próximas Tarefas e Eventos</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 py-2">
+                        <span class="text-muted"><i class="fas fa-calendar-check me-2 text-primary"></i>10 de Jun:</span> Revisar Provas - Matemática <span class="badge bg-primary rounded-pill">Urgente</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 py-2">
+                        <span class="text-muted"><i class="fas fa-calendar-check me-2 text-success"></i>12 de Jun:</span> Preparar Aula - História <span class="badge bg-secondary rounded-pill">Próximo</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 py-2">
+                        <span class="text-muted"><i class="fas fa-calendar-check me-2 text-info"></i>15 de Jun:</span> Lançar Notas - Português <span class="badge bg-warning text-dark rounded-pill">Importante</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 py-2">
+                        <span class="text-muted"><i class="fas fa-calendar-check me-2 text-danger"></i>18 de Jun:</span> Reunião de Pais - 15:00 <span class="badge bg-danger rounded-pill">Evento</span>
+                    </li>
+                    <li class="list-group-item text-center border-0 pt-3">
+                        <a href="{% url 'tarefas' %}" class="btn btn-outline-secondary btn-sm">Ver todas as atividades <i class="fas fa-arrow-right ms-2"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-4 h-100">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0 text-danger"><i class="fas fa-bell me-2"></i>Alertas e Notificações</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning p-2 mb-2 d-flex align-items-center" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <small>Prazo de avaliação de Português se aproxima.</small>
+                </div>
+                <div class="alert alert-info p-2 d-flex align-items-center" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <small>Nova disciplina "Física Quântica" adicionada.</small>
+                </div>
+                <div class="alert alert-success p-2 d-flex align-items-center" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <small>Relatório de desempenho mensal disponível.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+{% endblock %}

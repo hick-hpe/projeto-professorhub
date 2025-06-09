@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ProfessorHub{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4A90E2; /* A softer, professional blue */
+            --secondary-color: #6c757d;
+            --accent-color: #5cb85c; /* Green for success/highlights */
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40; /* Darker background for contrast elements */
+            --border-color: #e0e0e0; /* Lighter border */
+            --text-color: #333;
+            --header-font: 'Roboto', sans-serif; /* Example font */
+            --body-font: 'Open Sans', sans-serif; /* Example font */
+        }
+
+        body {
+            font-family: var(--body-font);
+            color: var(--text-color);
+            background-color: #f0f2f5; /* A very light grey for the overall page */
+        }
+
+        #wrapper {
+            display: flex;
+            transition: all 0.3s ease-in-out;
+            min-height: 100vh;
+            background-color: #fff; /* Main content background */
+            box-shadow: 0 0 20px rgba(0,0,0,0.05); /* Overall page shadow */
+        }
+
+        #wrapper.toggled #sidebar-wrapper {
+            margin-left: -15rem;
+        }
+
+        #sidebar-wrapper {
+            min-height: 100vh;
+            width: 15rem;
+            transition: all 0.3s ease-in-out;
+            background-color: var(--dark-bg); /* Darker sidebar background */
+            color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+            position: sticky; /* Keep sidebar in place on scroll */
+            top: 0;
+            left: 0;
+            z-index: 1000; /* Ensure sidebar is above other elements */
+        }
+
+        .sidebar-heading {
+            padding: 1.8rem 1.25rem; /* More vertical padding */
+            font-size: 1.6rem;
+            font-weight: bold;
+            text-align: center;
+            color: var(--primary-color); /* Branding color */
+            border-bottom: 1px solid rgba(255,255,255,0.1); /* Subtle white border */
+            font-family: var(--header-font);
+            letter-spacing: 0.5px;
+        }
+
+        .list-group-item {
+            padding: 1rem 1.25rem;
+            background-color: transparent; /* Transparent background */
+            border: none; /* No default borders */
+            color: rgba(255,255,255,0.8); /* Lighter text for normal links */
+            transition: background-color 0.2s ease, color 0.2s ease;
+            font-size: 0.95rem;
+            border-left: 5px solid transparent; /* For active state indication */
+        }
+
+        .list-group-item i {
+            color: rgba(255,255,255,0.6); /* Icon color */
+            transition: color 0.2s ease;
+        }
+
+        .list-group-item:hover {
+            background-color: rgba(255,255,255,0.1); /* Light transparent background on hover */
+            color: white;
+        }
+        .list-group-item:hover i {
+            color: white;
+        }
+
+        .list-group-item.active {
+            background-color: var(--primary-color); /* Active background */
+            color: white;
+            border-left-color: var(--primary-color); /* Highlight with primary color */
+            font-weight: bold;
+        }
+        .list-group-item.active i {
+            color: white;
+        }
+
+        .list-group-item.text-danger {
+            color: #dc3545; /* Bootstrap danger red */
+        }
+        .list-group-item.text-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        .list-group-item.text-danger i {
+            color: #dc3545;
+        }
+        .list-group-item.text-danger:hover i {
+            color: white;
+        }
+
+        #page-content-wrapper {
+            flex-grow: 1;
+            overflow-x: hidden;
+            padding-top: 60px; /* Space for fixed navbar */
+            position: relative;
+        }
+
+        .navbar {
+            padding: 0.7rem 1.5rem;
+            background-color: #fff;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: fixed; /* Fixed navbar at the top */
+            width: calc(100% - 15rem); /* Adjust width for sidebar */
+            top: 0;
+            left: 15rem;
+            z-index: 999; /* Below sidebar, above content */
+        }
+        #wrapper.toggled .navbar {
+             width: 100%; /* Full width when sidebar is toggled off */
+             left: 0;
+        }
+
+
+        #menu-toggle {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transition: all 0.2s ease;
+        }
+        #menu-toggle:hover {
+            background-color: #387ac6; /* Darker primary on hover */
+            border-color: #387ac6;
+        }
+
+        .page-title {
+            font-size: 1.7rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0;
+            font-family: var(--header-font);
+        }
+
+        .main-content-area {
+            padding: 1.5rem 2rem; /* More generous padding */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #wrapper #sidebar-wrapper {
+                margin-left: -15rem;
+                position: fixed; /* Fixed sidebar on small screens */
+                height: 100vh;
+                box-shadow: 5px 0 10px rgba(0,0,0,0.3);
+            }
+            #wrapper.toggled #sidebar-wrapper {
+                margin-left: 0;
+            }
+            #page-content-wrapper {
+                min-width: 100vw;
+                padding-top: 55px; /* Adjust for smaller fixed navbar */
+            }
+            .navbar {
+                width: 100%;
+                left: 0;
+            }
+            .sidebar-heading {
+                font-size: 1.4rem;
+                padding: 1.5rem 1rem;
+            }
+            .page-title {
+                font-size: 1.4rem;
+            }
+            .main-content-area {
+                padding: 1rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="d-flex" id="wrapper">
+    <div id="sidebar-wrapper">
+        <div class="sidebar-heading">ProfessorHub</div>
+        <div class="list-group list-group-flush">
+            <a href="{% url 'admin_dashboard' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="fas fa-chart-line me-2"></i>Dashboard
+            </a>
+            <a href="{% url 'disciplinas' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'disciplinas' %}active{% endif %}">
+                <i class="fas fa-book me-2"></i>Disciplinas
+            </a>
+            <a href="{% url 'tarefas' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'tarefas' %}active{% endif %}">
+                <i class="fas fa-tasks me-2"></i>Tarefas
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <i class="fas fa-clipboard-list me-2"></i>Avaliações
+            </a>
+            <a href="/settings/" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                <i class="fas fa-cog me-2"></i>Configurações
+            </a>
+            <a href="{% url 'logout' %}" class="list-group-item list-group-item-action text-danger">
+                <i class="fas fa-sign-out-alt me-2"></i>Sair
+            </a>
+        </div>
+    </div>
+    <div id="page-content-wrapper">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <button class="btn" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                <h5 class="ms-3 mb-0 page-title">{% block page_title %}{% endblock %}</h5>
+                <div class="d-flex align-items-center ms-auto">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://via.placeholder.com/30/4A90E2/FFFFFF?text=U" class="rounded-circle me-2" alt="User Avatar" style="width: 30px; height: 30px;">
+                            <span class="d-none d-sm-inline">
+                                {% if user.is_authenticated %}
+                                    {{ user.username }}
+                                {% else %}
+                                    Convidado
+                                {% endif %}
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="/profile/">Perfil</a></li>
+                            <li><a class="dropdown-item" href="/settings/">Configurações</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-content-area">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const toggleButton = document.getElementById('menu-toggle');
+    const wrapper = document.getElementById('wrapper');
+    const sidebar = document.getElementById('sidebar-wrapper');
+    const navbar = document.querySelector('.navbar');
+
+    toggleButton.addEventListener('click', () => {
+        wrapper.classList.toggle('toggled');
+        // Adjust navbar width/position based on sidebar state
+        if (wrapper.classList.contains('toggled')) {
+            navbar.style.width = '100%';
+            navbar.style.left = '0';
+        } else {
+            navbar.style.width = 'calc(100% - 15rem)';
+            navbar.style.left = '15rem';
+        }
+    });
+
+    // Add active class to sidebar links based on current URL
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('#sidebar-wrapper .list-group-item');
+
+        navLinks.forEach(link => {
+            const linkHref = link.getAttribute('href');
+            if (linkHref && currentPath.startsWith(linkHref)) { // Use startsWith for better matching
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+</body>
+</html>
