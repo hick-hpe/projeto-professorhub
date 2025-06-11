@@ -8,29 +8,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4A90E2; /* A softer, professional blue */
+            --primary-color: #007bff; /* Um azul mais padrão e vibrante para destaque */
             --secondary-color: #6c757d;
-            --accent-color: #5cb85c; /* Green for success/highlights */
-            --light-bg: #f8f9fa;
-            --dark-bg: #343a40; /* Darker background for contrast elements */
-            --border-color: #e0e0e0; /* Lighter border */
-            --text-color: #333;
-            --header-font: 'Roboto', sans-serif; /* Example font */
-            --body-font: 'Open Sans', sans-serif; /* Example font */
+            --accent-color: #28a745; /* Verde para sucesso/highlights */
+            --light-bg: #ffffff; /* Fundo branco puro para cards e main content */
+            --dark-bg: #212529; /* Sidebar escura, quase preta, para contraste */
+            --border-color: #e9ecef; /* Borda bem sutil e clara */
+            --text-color: #343a40; /* Texto mais escuro para boa legibilidade */
+            --header-font: 'Roboto', sans-serif;
+            --body-font: 'Open Sans', sans-serif;
         }
 
         body {
             font-family: var(--body-font);
             color: var(--text-color);
-            background-color: #f0f2f5; /* A very light grey for the overall page */
+            background-color: #f8f9fa; /* Um cinza muito claro para o fundo da página (fora do wrapper) */
         }
 
         #wrapper {
             display: flex;
             transition: all 0.3s ease-in-out;
             min-height: 100vh;
-            background-color: #fff; /* Main content background */
-            box-shadow: 0 0 20px rgba(0,0,0,0.05); /* Overall page shadow */
+            background-color: var(--light-bg); /* O main wrapper agora é branco */
+            box-shadow: 0 0 20px rgba(0,0,0,0.05); /* Sombra sutil para destacar o wrapper */
         }
 
         #wrapper.toggled #sidebar-wrapper {
@@ -41,43 +41,43 @@
             min-height: 100vh;
             width: 15rem;
             transition: all 0.3s ease-in-out;
-            background-color: var(--dark-bg); /* Darker sidebar background */
+            background-color: var(--dark-bg); /* Sidebar escura */
             color: white;
             box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-            position: sticky; /* Keep sidebar in place on scroll */
+            position: sticky;
             top: 0;
             left: 0;
-            z-index: 1000; /* Ensure sidebar is above other elements */
+            z-index: 1000;
         }
 
         .sidebar-heading {
-            padding: 1.8rem 1.25rem; /* More vertical padding */
+            padding: 1.8rem 1.25rem;
             font-size: 1.6rem;
             font-weight: bold;
             text-align: center;
-            color: var(--primary-color); /* Branding color */
-            border-bottom: 1px solid rgba(255,255,255,0.1); /* Subtle white border */
+            color: var(--primary-color); /* Usando o azul primário para o título da sidebar */
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             font-family: var(--header-font);
             letter-spacing: 0.5px;
         }
 
         .list-group-item {
             padding: 1rem 1.25rem;
-            background-color: transparent; /* Transparent background */
-            border: none; /* No default borders */
+            background-color: transparent;
+            border: none;
             color: rgba(255,255,255,0.8); /* Lighter text for normal links */
             transition: background-color 0.2s ease, color 0.2s ease;
             font-size: 0.95rem;
-            border-left: 5px solid transparent; /* For active state indication */
+            border-left: 5px solid transparent;
         }
 
         .list-group-item i {
-            color: rgba(255,255,255,0.6); /* Icon color */
+            color: rgba(255,255,255,0.6);
             transition: color 0.2s ease;
         }
 
         .list-group-item:hover {
-            background-color: rgba(255,255,255,0.1); /* Light transparent background on hover */
+            background-color: rgba(255,255,255,0.1);
             color: white;
         }
         .list-group-item:hover i {
@@ -85,9 +85,9 @@
         }
 
         .list-group-item.active {
-            background-color: var(--primary-color); /* Active background */
+            background-color: var(--primary-color); /* Active background com a cor primária */
             color: white;
-            border-left-color: var(--primary-color); /* Highlight with primary color */
+            border-left-color: var(--primary-color);
             font-weight: bold;
         }
         .list-group-item.active i {
@@ -113,24 +113,24 @@
             overflow-x: hidden;
             padding-top: 60px; /* Space for fixed navbar */
             position: relative;
+            background-color: var(--light-bg); /* Conteúdo principal também branco */
         }
 
         .navbar {
             padding: 0.7rem 1.5rem;
-            background-color: #fff;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            position: fixed; /* Fixed navbar at the top */
-            width: calc(100% - 15rem); /* Adjust width for sidebar */
+            background-color: var(--light-bg); /* Navbar agora é branca */
+            border-bottom: 1px solid var(--border-color); /* Borda sutil */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra suave */
+            position: fixed;
+            width: calc(100% - 15rem);
             top: 0;
             left: 15rem;
-            z-index: 999; /* Below sidebar, above content */
+            z-index: 999;
         }
         #wrapper.toggled .navbar {
-             width: 100%; /* Full width when sidebar is toggled off */
+             width: 100%;
              left: 0;
         }
-
 
         #menu-toggle {
             background-color: var(--primary-color);
@@ -139,27 +139,28 @@
             transition: all 0.2s ease;
         }
         #menu-toggle:hover {
-            background-color: #387ac6; /* Darker primary on hover */
-            border-color: #387ac6;
+            background-color: #0056b3; /* Darker primary on hover */
+            border-color: #0056b3;
         }
 
         .page-title {
             font-size: 1.7rem;
             font-weight: 600;
-            color: var(--primary-color);
+            color: var(--text-color); /* Título da página mais escuro */
             margin-bottom: 0;
             font-family: var(--header-font);
         }
 
         .main-content-area {
-            padding: 1.5rem 2rem; /* More generous padding */
+            padding: 1.5rem 2rem;
+            background-color: var(--light-bg); /* Certifica-se que a área de conteúdo é branca */
         }
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
             #wrapper #sidebar-wrapper {
                 margin-left: -15rem;
-                position: fixed; /* Fixed sidebar on small screens */
+                position: fixed;
                 height: 100vh;
                 box-shadow: 5px 0 10px rgba(0,0,0,0.3);
             }
@@ -168,7 +169,7 @@
             }
             #page-content-wrapper {
                 min-width: 100vw;
-                padding-top: 55px; /* Adjust for smaller fixed navbar */
+                padding-top: 55px;
             }
             .navbar {
                 width: 100%;
@@ -221,7 +222,7 @@
                 <div class="d-flex align-items-center ms-auto">
                     <div class="dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://via.placeholder.com/30/4A90E2/FFFFFF?text=U" class="rounded-circle me-2" alt="User Avatar" style="width: 30px; height: 30px;">
+                            <img src="https://via.placeholder.com/30/007bff/FFFFFF?text=U" class="rounded-circle me-2" alt="User Avatar" style="width: 30px; height: 30px;">
                             <span class="d-none d-sm-inline">
                                 {% if user.is_authenticated %}
                                     {{ user.username }}
