@@ -51,13 +51,17 @@ td {
     #sidebar-wrapper {
         margin-left: -250px;
     }
-    
+
     #wrapper.toggled #sidebar-wrapper {
         margin-left: 0;
     }
 
+    td {
+        height: 50px !important;
+    }
+
     .tarefas-container .badge {
         width: 20px;
-        height: 20px;
+        height: 20px !important;
     }
 }
