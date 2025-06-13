@@ -5,11 +5,16 @@ const wrapper = document.getElementById('wrapper');
 const tbody = document.querySelector('#table-calendar tbody');
 const tarefasParaHoje = document.getElementById('tarefasParaHoje');
 const tarefasParaEstaSemana = document.getElementById('tarefasParaEstaSemana');
+const iconClose = document.getElementById('icon-close');
 
 // toggle sidebar
 toggleButton.addEventListener('click', () => {
     wrapper.classList.toggle('toggled');
 });
+
+iconClose.addEventListener('click', () => {
+    wrapper.classList.toggle('toggled');
+})
 
 // dias e as tarefas relacionadas
 const TAREFAS_API = [
@@ -144,6 +149,7 @@ function construirCalendario() {
 }
 
 function calendarioMobile() {
+    console.log('calendarioMobile');
     tbody.innerHTML = '';
 
     let tr = document.createElement('tr');
@@ -175,6 +181,7 @@ function calendarioMobile() {
 }
 
 function calendarioDesktop() {
+    console.log('calendarioDesktop');
     tbody.innerHTML = '';
 
     let tr = document.createElement('tr');

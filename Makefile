@@ -3,12 +3,8 @@
 all: venv db start
 
 git:
-	@echo "Configuring Git user email and name..."
-	@read -p "Enter your Git email: " EMAIL_VAR
-	@read -p "Enter your Git name: " NAME_VAR
-	git config --global user.email "$$EMAIL_VAR"; \
-	git config --global user.name "$$NAME_VAR"
-	@echo "Olá, $$NAME_VAR: $$EMAIL_VAR"
+	@git config --global user.email ""
+	@git config --global user.name "hick-hpe"
 
 venv:
 	@python3 -m venv venv
