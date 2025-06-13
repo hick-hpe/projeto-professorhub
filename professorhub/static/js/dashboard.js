@@ -6,6 +6,7 @@ const tbody = document.querySelector('#table-calendar tbody');
 const tarefasParaHoje = document.getElementById('tarefasParaHoje');
 const tarefasParaEstaSemana = document.getElementById('tarefasParaEstaSemana');
 const iconClose = document.getElementById('icon-close');
+const select = document.querySelector('select');
 
 // toggle sidebar
 toggleButton.addEventListener('click', () => {
@@ -14,7 +15,7 @@ toggleButton.addEventListener('click', () => {
 
 iconClose.addEventListener('click', () => {
     wrapper.classList.toggle('toggled');
-})
+});
 
 // dias e as tarefas relacionadas
 const TAREFAS_API = [
@@ -22,7 +23,7 @@ const TAREFAS_API = [
         nome: 'Corrigir os trabalhos do 2º bimestre',
         dia: new Date(2025, 5, 13),
         prazo: new Date(2025, 5, 17),
-        status: 'pendente',
+        status: 'em andamento',
         disciplina: 'Desenvolvimento Web II'
     },
     {
@@ -36,7 +37,7 @@ const TAREFAS_API = [
         nome: 'Finalizar relatório do projeto de Gestão de Projetos',
         dia: new Date(2025, 5, 15),
         prazo: new Date(2025, 5, 21),
-        status: 'pendente',
+        status: 'concluída',
         disciplina: 'Gestão de Projetos'
     },
     {
@@ -50,7 +51,7 @@ const TAREFAS_API = [
         nome: 'Preparar exercícios para aula de Desenvolvimento Web II',
         dia: new Date(2025, 5, 17),
         prazo: new Date(2025, 5, 22),
-        status: 'pendente',
+        status: 'em andamento',
         disciplina: 'Desenvolvimento Web II'
     },
     {
@@ -64,14 +65,14 @@ const TAREFAS_API = [
         nome: 'Ajustar cronograma do projeto de Gestão de Projetos',
         dia: new Date(2025, 5, 19),
         prazo: new Date(2025, 5, 24),
-        status: 'pendente',
+        status: 'em andamento',
         disciplina: 'Gestão de Projetos'
     },
     {
         nome: 'Finalizar o estudo de tecnologias abordadas em Tópicos especiais',
         dia: new Date(2025, 5, 20),
         prazo: new Date(2025, 5, 25),
-        status: 'pendente',
+        status: 'concluída',
         disciplina: 'Tópicos especiais'
     },
     {
@@ -85,13 +86,12 @@ const TAREFAS_API = [
         nome: 'Estudar conceito de normalização em Banco de Dados I',
         dia: new Date(2025, 5, 22),
         prazo: new Date(2025, 5, 27),
-        status: 'pendente',
+        status: 'concluída',
         disciplina: 'Banco de Dados I'
     }
 ];
 
-
-const dia_tarefas = tarefasDoDia();
+let dia_tarefas = tarefasPorDia();
 
 const STATUS = {
     'pendente': 'danger',
@@ -121,20 +121,29 @@ function diaDaSemanaDoDia01() {
     date.toLocaleDateString('pt-BR', { weekday: 'long' });
 }
 
-function tarefasDoDia() {
-    let dia_tarefas = new Map();
+function tarefasPorDia() {
+    const selectValue = select?.value || "Todas"; // Garante um valor padrão
+
+    const dia_tarefas = new Map();
+
     for (const tarefa of TAREFAS_API) {
+        // Se uma disciplina for selecionada (e não for "Todas"), filtra
+        if (selectValue !== "Todas" && tarefa.disciplina !== selectValue) {
+            continue;
+        }
+
         const dia = tarefa.dia.getDate();
 
         if (!dia_tarefas.has(dia)) {
             dia_tarefas.set(dia, [tarefa]);
         } else {
-            const tarefasDoMesmoDia = dia_tarefas.get(dia);
-            dia_tarefas.set(dia, [...tarefasDoMesmoDia, tarefa]);
+            dia_tarefas.get(dia).push(tarefa);
         }
     }
+
     return dia_tarefas;
 }
+
 
 
 function construirCalendario() {
@@ -212,6 +221,15 @@ function calendarioDesktop() {
         tbody.appendChild(tr);
     }
 }
+
+// select disciplinas
+select.addEventListener('change', () => {
+    for (const tarefa of dia_tarefas) {
+        dia_tarefas.delete(tarefa[0]);
+    }
+    dia_tarefas = tarefasPorDia()
+    construirCalendario();
+});
 
 listarTarefasParaHoje();
 function listarTarefasParaHoje() {
