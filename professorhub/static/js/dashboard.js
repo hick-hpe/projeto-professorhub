@@ -135,7 +135,6 @@ function tarefasDoDia() {
 
 function construirCalendario() {
     const ehMobile = window.innerWidth < 576;
-    console.log(ehMobile ? 'MOBILE' : 'PC');
 
     const calendario = {
         false: calendarioDesktop,
@@ -149,7 +148,6 @@ function calendarioMobile() {
 
     let tr = document.createElement('tr');
 
-    console.log('mobile');
     for (let i = 1; i <= DIAS_NO_MES; i++) {
         const td = document.createElement('td');
 
