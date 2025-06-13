@@ -22,75 +22,74 @@ const TAREFAS_API = [
         nome: 'Corrigir os trabalhos do 2º bimestre',
         dia: new Date(2025, 5, 13),
         prazo: new Date(2025, 5, 17),
-        status: 'pendente'
+        status: 'pendente',
+        disciplina: 'Desenvolvimento Web II'
     },
     {
-        nome: 'Planejar aula sobre Revolução Francesa',
+        nome: 'Revisar conteúdo de Banco de Dados I para a prova',
         dia: new Date(2025, 5, 14),
-        prazo: new Date(2025, 5, 16),
-        status: 'em andamento'
-    },
-    {
-        nome: 'Corrigir exercícios da turma 1B',
-        dia: new Date(2025, 5, 14),
-        prazo: new Date(2025, 5, 15),
-        status: 'pendente'
-    },
-    {
-        nome: 'Lançar notas da turma 3A',
-        dia: new Date(2025, 5, 15),
-        prazo: new Date(2025, 5, 18),
-        status: 'pendente'
-    },
-    {
-        nome: 'Corrigir prova de Matemática',
-        dia: new Date(2025, 5, 15),
-        prazo: new Date(2025, 5, 17),
-        status: 'pendente'
-    },
-    {
-        nome: 'Criar formulário para avaliação diagnóstica',
-        dia: new Date(2025, 5, 16),
-        prazo: new Date(2025, 5, 20),
-        status: 'concluída'
-    },
-    {
-        nome: 'Preparar slides da aula de biologia',
-        dia: new Date(2025, 5, 16),
-        prazo: new Date(2025, 5, 18),
-        status: 'em andamento'
-    },
-    {
-        nome: 'Revisar conteúdo para prova final',
-        dia: new Date(2025, 5, 17),
-        prazo: new Date(2025, 5, 21),
-        status: 'em andamento'
-    },
-    {
-        nome: 'Aplicar prova simulada',
-        dia: new Date(2025, 5, 17),
-        prazo: new Date(2025, 5, 17),
-        status: 'pendente'
-    },
-    {
-        nome: 'Atualizar plano de aula no sistema',
-        dia: new Date(2025, 5, 18),
-        prazo: new Date(2025, 5, 22),
-        status: 'pendente'
-    },
-    {
-        nome: 'Participar de reunião pedagógica',
-        dia: new Date(2025, 5, 19),
         prazo: new Date(2025, 5, 19),
-        status: 'concluída'
+        status: 'pendente',
+        disciplina: 'Banco de Dados I'
     },
     {
-        nome: 'Organizar material para aula prática',
-        dia: new Date(2025, 5, 19),
+        nome: 'Finalizar relatório do projeto de Gestão de Projetos',
+        dia: new Date(2025, 5, 15),
+        prazo: new Date(2025, 5, 21),
+        status: 'pendente',
+        disciplina: 'Gestão de Projetos'
+    },
+    {
+        nome: 'Revisar slides para apresentação de Tópicos especiais',
+        dia: new Date(2025, 5, 16),
         prazo: new Date(2025, 5, 20),
-        status: 'em andamento'
+        status: 'pendente',
+        disciplina: 'Tópicos especiais'
+    },
+    {
+        nome: 'Preparar exercícios para aula de Desenvolvimento Web II',
+        dia: new Date(2025, 5, 17),
+        prazo: new Date(2025, 5, 22),
+        status: 'pendente',
+        disciplina: 'Desenvolvimento Web II'
+    },
+    {
+        nome: 'Revisar consultas SQL para Banco de Dados I',
+        dia: new Date(2025, 5, 18),
+        prazo: new Date(2025, 5, 23),
+        status: 'pendente',
+        disciplina: 'Banco de Dados I'
+    },
+    {
+        nome: 'Ajustar cronograma do projeto de Gestão de Projetos',
+        dia: new Date(2025, 5, 19),
+        prazo: new Date(2025, 5, 24),
+        status: 'pendente',
+        disciplina: 'Gestão de Projetos'
+    },
+    {
+        nome: 'Finalizar o estudo de tecnologias abordadas em Tópicos especiais',
+        dia: new Date(2025, 5, 20),
+        prazo: new Date(2025, 5, 25),
+        status: 'pendente',
+        disciplina: 'Tópicos especiais'
+    },
+    {
+        nome: 'Organizar material didático para Desenvolvimento Web II',
+        dia: new Date(2025, 5, 21),
+        prazo: new Date(2025, 5, 26),
+        status: 'pendente',
+        disciplina: 'Desenvolvimento Web II'
+    },
+    {
+        nome: 'Estudar conceito de normalização em Banco de Dados I',
+        dia: new Date(2025, 5, 22),
+        prazo: new Date(2025, 5, 27),
+        status: 'pendente',
+        disciplina: 'Banco de Dados I'
     }
 ];
+
 
 const dia_tarefas = tarefasDoDia();
 
