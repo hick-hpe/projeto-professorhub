@@ -134,8 +134,49 @@ function tarefasDoDia() {
 
 
 function construirCalendario() {
-    const mobile = window.innerWidth < 576;
-    console.log(mobile ? 'MOBILE' : 'PC');
+    const ehMobile = window.innerWidth < 576;
+    console.log(ehMobile ? 'MOBILE' : 'PC');
+
+    const calendario = {
+        false: calendarioDesktop,
+        true: calendarioMobile
+    }
+    calendario[ehMobile]();
+}
+
+function calendarioMobile() {
+    tbody.innerHTML = '';
+
+    let tr = document.createElement('tr');
+
+    console.log('mobile');
+    for (let i = 1; i <= DIAS_NO_MES; i++) {
+        const td = document.createElement('td');
+
+        const tarefas = dia_tarefas.get(i) || [];
+
+        const tarefasHtml = `<div class="badge bg-primary">...</div>`;
+
+        td.className = 'border';
+        td.innerHTML = `
+            <div class="text-end fw-bold">${i}</div>
+            <div class="tarefas-container">${tarefas.length > 0 ? tarefasHtml : ''}</div>
+        `;
+
+        tr.appendChild(td);
+
+        if (i % 7 === 0) {
+            tbody.appendChild(tr);
+            tr = document.createElement('tr');
+        }
+    }
+
+    if (tr.children.length > 0) {
+        tbody.appendChild(tr);
+    }
+}
+
+function calendarioDesktop() {
     tbody.innerHTML = '';
 
     let tr = document.createElement('tr');
@@ -177,7 +218,7 @@ function listarTarefasParaHoje() {
             <div
                 class="d-flex flex-column align-items-center me-3 border-end border-${STATUS[tarefa.status]} border-4 pe-4">
                 <div class="fs-2">${now.getDate()}</div>
-                <div class>${now.toLocaleDateString('pt-BR', {weekday: 'long'}).substring(0, 3).toUpperCase()}</div>
+                <div class>${now.toLocaleDateString('pt-BR', { weekday: 'long' }).substring(0, 3).toUpperCase()}</div>
             </div>
             <div class="d-flex align-items-center justify-content-center">
                 ${tarefa.nome}
@@ -190,9 +231,9 @@ listartarefasParaEstaSemana();
 function listartarefasParaEstaSemana() {
     const now = new Date();
     let tarefas = [];
-    
+
     while (true) {
-        now.setDate(now.getDate()+1);
+        now.setDate(now.getDate() + 1);
         const r = dia_tarefas.get(now.getDate());
         if (r) tarefas = [...tarefas, ...r];
         console.log(tarefas.length);
@@ -205,7 +246,7 @@ function listartarefasParaEstaSemana() {
             <div
                 class="d-flex flex-column align-items-center me-3 border-end border-${STATUS[tarefa.status]} border-4 pe-4">
                 <div class="fs-2">${tarefa.dia.getDate()}</div>
-                <div class>${tarefa.dia.toLocaleDateString('pt-BR', {weekday: 'long'}).substring(0, 3).toUpperCase()}</div>
+                <div class>${tarefa.dia.toLocaleDateString('pt-BR', { weekday: 'long' }).substring(0, 3).toUpperCase()}</div>
             </div>
             <div class="d-flex align-items-center justify-content-center">
                 ${tarefa.nome}
@@ -219,4 +260,4 @@ window.addEventListener('resize', () => {
     construirCalendario();
 });
 
-  
+
