@@ -1,0 +1,63 @@
+select {
+    max-width: max-content;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+    transition: margin 0.3s ease;
+}
+
+#sidebar-wrapper {
+    height: 100dvh;
+    width: 250px;
+    transition: margin 0.3s ease;
+}
+
+#page-content-wrapper {
+    flex: 1;
+}
+
+thead tr {
+    width: calc(100%/ 7);
+    text-align: center;
+}
+
+td {
+    height: 100px !important;
+    vertical-align: top;
+    padding: 4px;
+}
+
+.tarefas-container {
+    max-height: 70px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* Cada badge com texto truncado */
+.tarefas-container .badge {
+    /* width: clac(100% / 7); */
+    width: 80px;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: -250px;
+    }
+    
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    .tarefas-container .badge {
+        width: 20px;
+        height: 20px;
+    }
+}
