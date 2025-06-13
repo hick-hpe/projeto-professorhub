@@ -20,8 +20,10 @@ select {
     #sidebar-wrapper {
         margin-left: -250px;
     }
-
+    
     #wrapper.toggled #sidebar-wrapper {
         margin-left: 0;
     }
+
+
 }
