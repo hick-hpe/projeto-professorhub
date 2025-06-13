@@ -1,0 +1,27 @@
+select {
+    max-width: max-content;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+    transition: margin 0.3s ease;
+}
+
+#sidebar-wrapper {
+    width: 250px;
+    transition: margin 0.3s ease;
+}
+
+#page-content-wrapper {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: -250px;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+}

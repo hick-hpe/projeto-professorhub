@@ -1,8 +1,5 @@
 .PHONY: git venv
 
-EMAIL_VAR=""
-NAME_VAR=""
-
 all: venv db start
 
 git:
