@@ -1,4 +1,4 @@
-// referencias
+// Referências DOM
 const mesAtual = document.getElementById('mes-atual');
 const toggleButton = document.getElementById('menu-toggle');
 const wrapper = document.getElementById('wrapper');
@@ -11,27 +11,25 @@ const labelDiasSemana = document.querySelectorAll('.label-dia-semana');
 const btnMesAnterior = document.getElementById('mes-anterior');
 const btnMesPosterior = document.getElementById('mes-posterior');
 
-// toggle sidebar
-toggleButton.addEventListener('click', () => {
-    wrapper.classList.toggle('toggled');
-});
+// Sidebar toggle
+toggleButton.addEventListener('click', () => wrapper.classList.toggle('toggled'));
+iconClose.addEventListener('click', () => wrapper.classList.toggle('toggled'));
 
-iconClose.addEventListener('click', () => {
-    wrapper.classList.toggle('toggled');
-});
+// Configurações fixas
+const STATUS = {
+    'pendente': 'danger',
+    'concluída': 'success',
+    'em andamento': 'warning',
+};
 
-// mudar mes
-btnMesAnterior.addEventListener('click', () => {
-    date.setMonth(date.getMonth() - 1);
-    construirCalendario();
-});
+const DIAS_SEMANA = {
+    'Dom': 'D', 'Seg': 'S', 'Ter': 'T', 'Qua': 'Q', 'Qui': 'Q', 'Sex': 'S', 'Sáb': 'S',
+};
 
-btnMesPosterior.addEventListener('click', () => {
-    date.setMonth(date.getMonth() + 1);
-    construirCalendario();
-});
+const LABELS_DIAS = Object.keys(DIAS_SEMANA);
+const date = new Date();
 
-// dias e as tarefas relacionadas
+// Dados de tarefas (mock)
 const TAREFAS_API = [
     {
         nome: 'Corrigir os trabalhos do 2º bimestre',
@@ -107,130 +105,68 @@ const TAREFAS_API = [
     }
 ];
 
-let dia_tarefas = tarefasPorDia();
-
-const DIAS_SEMANA = {
-    'Dom': 'D',
-    'Seg': 'S',
-    'Ter': 'T',
-    'Qua': 'Q',
-    'Qui': 'Q',
-    'Sex': 'S',
-    'Sáb': 'S',
-};
-const LABELS_DIAS = Object.keys(DIAS_SEMANA);
-
-
-const STATUS = {
-    'pendente': 'danger',
-    'concluída': 'success',
-    'em andamento': 'warning',
-}
-
-// primeiro dia do mes atual
-const date = new Date();
-const diaSemana = diaDaSemanaDoDia01();
-
-// construir calendario
-const DIAS_NO_MES = diasNoMes(date.getMonth(), date.getFullYear());
-construirCalendario();
-
-
-// funcoes
 function diasNoMes(mes, ano) {
     return new Date(ano, mes + 1, 0).getDate();
 }
 
 function diaDaSemanaDoDia01() {
-    date.setDate(1);
-    date.toLocaleDateString('pt-BR', { weekday: 'long' });
+    const temp = new Date(date);
+    temp.setDate(1);
+    return temp.getDay();
 }
 
 function tarefasPorDia() {
-    const selectValue = select?.value || "Todas"; // Garante um valor padrão
-
-    const dia_tarefas = new Map();
+    const selectValue = select?.value || "Todas";
+    const mapa = new Map();
 
     for (const tarefa of TAREFAS_API) {
-        // Se uma disciplina for selecionada (e não for "Todas"), filtra
-        if (selectValue !== "Todas" && tarefa.disciplina !== selectValue) {
-            continue;
-        }
-
+        if (selectValue !== "Todas" && tarefa.disciplina !== selectValue) continue;
         const dia = tarefa.prazo.getDate();
 
-        if (!dia_tarefas.has(dia)) {
-            dia_tarefas.set(dia, [tarefa]);
-        } else {
-            dia_tarefas.get(dia).push(tarefa);
+        if (!mapa.has(dia)) mapa.set(dia, []);
+        if (date.getMonth() === tarefa.prazo.getMonth()) {
+            mapa.get(dia).push(tarefa);
         }
     }
 
-    return dia_tarefas;
+    return mapa;
 }
 
-
 function construirCalendario() {
-    const mesExtenso = date.toLocaleDateString('pt-BR', { month: 'long' });
-    mesAtual.innerText = mesExtenso.toUpperCase();
+    dia_tarefas = tarefasPorDia();
+    tbody.innerHTML = '';
+    tarefasParaHoje.innerHTML = '';
+    tarefasParaEstaSemana.innerHTML = '';
+
+    listarTarefasParaHoje();
+    listartarefasParaEstaSemana();
+
+    mesAtual.innerText = date.toLocaleDateString('pt-BR', { month: 'long' }).toUpperCase();
 
     const ehMobile = window.innerWidth < 576;
-
-    const calendario = {
-        false: calendarioDesktop,
-        true: calendarioMobile
-    }
-    calendario[ehMobile]();
+    (ehMobile ? calendarioMobile : calendarioDesktop)();
 }
 
 function calendarioMobile() {
-    console.log('calendarioMobile');
-    tbody.innerHTML = '';
-    let ultimaData;
-
     let tr = document.createElement('tr');
 
-    for (let i = 1; i <= DIAS_NO_MES; i++) {
+    for (let i = 1; i <= diasNoMes(date.getMonth(), date.getFullYear()); i++) {
         const td = document.createElement('td');
-
         const tarefas = dia_tarefas.get(i) || [];
-
-        const tarefasAux = tarefas.filter(tarefa => tarefa.prazo.getMonth() === date.getMonth());
-        let tarefasHtml = '';
-
-        if (tarefasAux.length) {
-            tarefasHtml = `<div class="badge bg-primary">...</div>`;
-
-        }
 
         td.className = 'border';
         td.innerHTML = `
-        <div class="text-end fw-bold">${i}</div>
-        <div class="tarefas-container">${tarefasHtml}</div>
+            <div class="text-end fw-bold">${i}</div>
+            <div class="tarefas-container">${tarefas.length ? '<div class="badge bg-primary">...</div>' : ''}</div>
         `;
-
         tr.appendChild(td);
 
-        if (i % 7 === 0) {
+        if (tr.children.length === 7) {
             tbody.appendChild(tr);
             tr = document.createElement('tr');
         }
     }
-
-    let i = 1;
-    while (tr.children.length < 7) {
-        const td = document.createElement('td');
-        td.className = 'border';
-        td.style.backgroundColor = '#ccc';
-        td.innerHTML = `<div class="text-end fw-bold">${i}</div>`;
-        tr.appendChild(td);
-        i++;
-        date.setDate(i);
-    }
-
-    if (tr.children.length > 0) {
-        tbody.appendChild(tr);
-    }
+    if (tr.children.length > 0) tbody.appendChild(tr);
 
     labelDiasSemana.forEach(label => {
         label.innerText = DIAS_SEMANA[label.innerText];
@@ -238,44 +174,26 @@ function calendarioMobile() {
 }
 
 function calendarioDesktop() {
-    console.log('calendarioDesktop');
-    tbody.innerHTML = '';
-
-    const diasMesAnterior = diasNoMes(date.getMonth(), date.getFullYear());
-    console.log('diasMesAnterior:', diasMesAnterior);
-
-    let comeco = diasMesAnterior - date.getDay() + 1;
-    console.log('comeco:', comeco);
-
     let tr = document.createElement('tr');
-    for (let i = 0; i < date.getDay(); i++) {
+    const primeiroDiaSemana = diaDaSemanaDoDia01();
+
+    // Dias anteriores
+    let diaAnterior = diasNoMes(date.getMonth() - 1, date.getFullYear()) - primeiroDiaSemana + 1;
+    for (let i = 0; i < primeiroDiaSemana; i++) {
         const td = document.createElement('td');
-        td.className = 'border';
-        td.style.backgroundColor = '#ccc';
-        td.innerHTML = `<div class="text-end fw-bold">${comeco}</div>`;
+        td.className = 'border bg-secondary-subtle';
+        td.innerHTML = `<div class="text-end fw-bold">${diaAnterior++}</div>`;
         tr.appendChild(td);
-        comeco++;
     }
 
-    for (let i = 1; i <= DIAS_NO_MES; i++) {
-        date.setDate(i);
-
+    const totalDias = diasNoMes(date.getMonth(), date.getFullYear());
+    for (let i = 1; i <= totalDias; i++) {
         const td = document.createElement('td');
-
         const tarefas = dia_tarefas.get(i) || [];
 
-        const tarefasAux = tarefas.filter(tarefa => tarefa.prazo.getMonth() === date.getMonth());
-        let tarefasHtml = '';
-
-        if (tarefasAux.length) {
-            tarefasHtml = tarefasAux.map(tarefa => `
-                <div class="badge bg-${STATUS[tarefa.status]}">${tarefa.nome}</div>
-            `).join('');
-
-            tarefasAux.forEach(tarefa => {
-                if (tarefa.prazo) ultimaDiaDaSemana = tarefa.prazo.getDay();
-            });
-        }
+        const tarefasHtml = tarefas.map(tarefa => `
+            <div class="badge bg-${STATUS[tarefa.status]} text-truncate">${tarefa.nome}</div>
+        `).join('');
 
         td.className = 'border';
         td.innerHTML = `
@@ -284,108 +202,99 @@ function calendarioDesktop() {
         `;
 
         tr.appendChild(td);
-
-        if (tr.children.length == 7) {
+        if (tr.children.length === 7) {
             tbody.appendChild(tr);
             tr = document.createElement('tr');
         }
     }
 
-    let i = 1;
+    let diaPosterior = 1;
     while (tr.children.length < 7) {
         const td = document.createElement('td');
-        td.className = 'border';
-        td.style.backgroundColor = '#ccc';
-        td.innerHTML = `<div class="text-end fw-bold">${i}</div>`;
+        td.className = 'border bg-secondary-subtle';
+        td.innerHTML = `<div class="text-end fw-bold">${diaPosterior++}</div>`;
         tr.appendChild(td);
-        i++;
-        date.setDate(i);
     }
-
-    if (tr.children.length > 0) {
-        tbody.appendChild(tr);
-    }
+    tbody.appendChild(tr);
 
     labelDiasSemana.forEach((label, index) => {
         label.innerText = LABELS_DIAS[index];
     });
 }
 
-// select disciplinas
-select.addEventListener('change', () => {
-    for (const tarefa of dia_tarefas) {
-        dia_tarefas.delete(tarefa[0]);
-    }
-    dia_tarefas = tarefasPorDia()
-    construirCalendario();
-});
-
-listarTarefasParaHoje();
 function listarTarefasParaHoje() {
     const now = new Date();
     const tarefas = dia_tarefas.get(now.getDate()) || [];
 
-    if (tarefas.length > 0) {
-        for (const tarefa of tarefas) {
-
+    if (tarefas.length) {
+        tarefas.forEach(tarefa => {
             if (tarefa.prazo.getMonth() === date.getMonth()) {
-
                 tarefasParaHoje.innerHTML += `
-                <div class="d-flex align-items-center">
-                    <div
-                        class="d-flex flex-column align-items-center me-3 border-end border-${STATUS[tarefa.status]} border-4 pe-4">
-                        <div class="fs-2">${now.getDate()}</div>
-                        <div class>${now.toLocaleDateString('pt-BR', { weekday: 'long' }).substring(0, 3).toUpperCase()}</div>
+                    <div class="d-flex align-items-center">
+                        <div class="d-flex flex-column align-items-center me-3 border-end border-${STATUS[tarefa.status]} border-4 pe-4">
+                            <div class="fs-2">${now.getDate()}</div>
+                            <div>${now.toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}</div>
+                        </div>
+                        <div>${tarefa.nome}</div>
                     </div>
-                    <div class="d-flex align-items-center justify-content-center">
-                        ${tarefa.nome}
-                    </div>
-                </div>`;
+                `;
             }
-        }
+        });
     } else {
-        tarefasParaHoje.innerHTML += `<div class="d-flex align-items-center">Não há tarefas para hoje.</div>`
+        tarefasParaHoje.innerHTML = '<div>Não há tarefas para hoje.</div>';
     }
 }
 
-listartarefasParaEstaSemana();
 function listartarefasParaEstaSemana() {
     const now = new Date();
-    let tarefas = [];
+    const fimSemana = new Date(now);
+    fimSemana.setDate(now.getDate() + (6 - now.getDay()));
 
-    while (true) {
-        if (now.getDay() == 6) break;
+    const tarefas = [];
 
-        now.setDate(now.getDate() + 1);
-        const r = dia_tarefas.get(now.getDate());
-        if (r) tarefas = [...tarefas, ...r];
+    for (const [dia, lista] of dia_tarefas.entries()) {
+        lista.forEach(tarefa => {
+            const prazo = tarefa.prazo;
+            if (prazo >= now && prazo <= fimSemana && prazo.getMonth() === date.getMonth()) {
+                tarefas.push(tarefa);
+            }
+        });
     }
 
-    if (tarefas.length > 0) {
-        for (const tarefa of tarefas) {
-
-            if (tarefa.prazo.getMonth() == date.getMonth()) {
-                tarefasParaEstaSemana.innerHTML += `
+    if (tarefas.length) {
+        tarefas.forEach(tarefa => {
+            tarefasParaEstaSemana.innerHTML += `
                 <div class="d-flex align-items-center">
-                    <div
-                        class="d-flex flex-column align-items-center me-3 border-end border-${STATUS[tarefa.status]} border-4 pe-4">
+                    <div class="d-flex flex-column align-items-center me-3 border-end border-${STATUS[tarefa.status]} border-4 pe-4">
                         <div class="fs-2">${tarefa.prazo.getDate()}</div>
-                        <div class>${tarefa.prazo.toLocaleDateString('pt-BR', { weekday: 'long' }).substring(0, 3).toUpperCase()}</div>
+                        <div>${tarefa.prazo.toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}</div>
                     </div>
-                    <div class="d-flex align-items-center justify-content-center">
-                        ${tarefa.nome}
-                    </div>
-                </div>`;
-            }
-        }
+                    <div>${tarefa.nome}</div>
+                </div>
+            `;
+        });
     } else {
-        tarefasParaEstaSemana.innerHTML += `<div class="d-flex align-items-center">Não há mais tarefas para esta semana.</div>`
+        tarefasParaEstaSemana.innerHTML = '<div>Não há mais tarefas para esta semana.</div>';
     }
 }
 
-
-window.addEventListener('resize', () => {
+// Mudança de mês
+btnMesAnterior.addEventListener('click', () => {
+    date.setMonth(date.getMonth() - 1);
     construirCalendario();
 });
 
+btnMesPosterior.addEventListener('click', () => {
+    date.setMonth(date.getMonth() + 1);
+    construirCalendario();
+});
 
+// Filtro de disciplina
+select.addEventListener('change', () => construirCalendario());
+
+// Redimensionamento de tela
+window.addEventListener('resize', () => construirCalendario());
+
+// Inicialização
+let dia_tarefas = tarefasPorDia();
+construirCalendario();
