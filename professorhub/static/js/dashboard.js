@@ -21,71 +21,73 @@ iconClose.addEventListener('click', () => {
 const TAREFAS_API = [
     {
         nome: 'Corrigir os trabalhos do 2º bimestre',
-        dia: new Date(2025, 5, 13),
-        prazo: new Date(2025, 5, 17),
+        prazo: new Date(2025, 5, 14),
         status: 'em andamento',
         disciplina: 'Desenvolvimento Web II'
     },
     {
         nome: 'Revisar conteúdo de Banco de Dados I para a prova',
-        dia: new Date(2025, 5, 14),
         prazo: new Date(2025, 5, 19),
         status: 'pendente',
         disciplina: 'Banco de Dados I'
     },
     {
         nome: 'Finalizar relatório do projeto de Gestão de Projetos',
-        dia: new Date(2025, 5, 15),
         prazo: new Date(2025, 5, 21),
         status: 'concluída',
         disciplina: 'Gestão de Projetos'
     },
     {
         nome: 'Revisar slides para apresentação de Tópicos especiais',
-        dia: new Date(2025, 5, 16),
         prazo: new Date(2025, 5, 20),
         status: 'pendente',
         disciplina: 'Tópicos especiais'
     },
     {
         nome: 'Preparar exercícios para aula de Desenvolvimento Web II',
-        dia: new Date(2025, 5, 17),
         prazo: new Date(2025, 5, 22),
         status: 'em andamento',
         disciplina: 'Desenvolvimento Web II'
     },
     {
         nome: 'Revisar consultas SQL para Banco de Dados I',
-        dia: new Date(2025, 5, 18),
         prazo: new Date(2025, 5, 23),
         status: 'pendente',
         disciplina: 'Banco de Dados I'
     },
     {
         nome: 'Ajustar cronograma do projeto de Gestão de Projetos',
-        dia: new Date(2025, 5, 19),
         prazo: new Date(2025, 5, 24),
         status: 'em andamento',
         disciplina: 'Gestão de Projetos'
     },
     {
         nome: 'Finalizar o estudo de tecnologias abordadas em Tópicos especiais',
-        dia: new Date(2025, 5, 20),
         prazo: new Date(2025, 5, 25),
         status: 'concluída',
         disciplina: 'Tópicos especiais'
     },
     {
         nome: 'Organizar material didático para Desenvolvimento Web II',
-        dia: new Date(2025, 5, 21),
         prazo: new Date(2025, 5, 26),
         status: 'pendente',
         disciplina: 'Desenvolvimento Web II'
     },
     {
         nome: 'Estudar conceito de normalização em Banco de Dados I',
-        dia: new Date(2025, 5, 22),
         prazo: new Date(2025, 5, 27),
+        status: 'concluída',
+        disciplina: 'Banco de Dados I'
+    },
+    {
+        nome: 'Mês anterior',
+        prazo: new Date(2025, 4, 27),
+        status: 'concluída',
+        disciplina: 'Banco de Dados I'
+    },
+    {
+        nome: 'Mês posterior',
+        prazo: new Date(2025, 6, 27),
         status: 'concluída',
         disciplina: 'Banco de Dados I'
     }
@@ -132,7 +134,7 @@ function tarefasPorDia() {
             continue;
         }
 
-        const dia = tarefa.dia.getDate();
+        const dia = tarefa.prazo.getDate();
 
         if (!dia_tarefas.has(dia)) {
             dia_tarefas.set(dia, [tarefa]);
@@ -167,12 +169,17 @@ function calendarioMobile() {
 
         const tarefas = dia_tarefas.get(i) || [];
 
-        const tarefasHtml = `<div class="badge bg-primary">...</div>`;
+        const tarefasAux = tarefas.filter(tarefa => tarefa.prazo.getMonth() === new Date().getMonth());
+        let tarefasHtml = '';
+
+        if (tarefasAux.length) {
+            tarefasHtml = `<div class="badge bg-primary">...</div>`;
+        }
 
         td.className = 'border';
         td.innerHTML = `
             <div class="text-end fw-bold">${i}</div>
-            <div class="tarefas-container">${tarefas.length > 0 ? tarefasHtml : ''}</div>
+            <div class="tarefas-container">${tarefasHtml}</div>
         `;
 
         tr.appendChild(td);
@@ -199,9 +206,14 @@ function calendarioDesktop() {
 
         const tarefas = dia_tarefas.get(i) || [];
 
-        const tarefasHtml = tarefas.map(tarefa => `
-            <div class="badge bg-${STATUS[tarefa.status]}">${tarefa.nome}</div>
-        `).join('');
+        const tarefasAux = tarefas.filter(tarefa => tarefa.prazo.getMonth() === new Date().getMonth());
+        let tarefasHtml = '';
+
+        if (tarefasAux.length) {
+            tarefasHtml = tarefasAux.map(tarefa => `
+                <div class="badge bg-${STATUS[tarefa.status]}">${tarefa.nome}</div>
+            `).join('');
+        }
 
         td.className = 'border';
         td.innerHTML = `
@@ -234,18 +246,28 @@ select.addEventListener('change', () => {
 listarTarefasParaHoje();
 function listarTarefasParaHoje() {
     const now = new Date();
-    const tarefas = dia_tarefas.get(now.getDate());
-    for (const tarefa of tarefas) {
-        tarefasParaHoje.innerHTML += `<div class="d-flex align-items-center">
-            <div
-                class="d-flex flex-column align-items-center me-3 border-end border-${STATUS[tarefa.status]} border-4 pe-4">
-                <div class="fs-2">${now.getDate()}</div>
-                <div class>${now.toLocaleDateString('pt-BR', { weekday: 'long' }).substring(0, 3).toUpperCase()}</div>
-            </div>
-            <div class="d-flex align-items-center justify-content-center">
-                ${tarefa.nome}
-            </div>
-        </div>`;
+    const tarefas = dia_tarefas.get(now.getDate()) || [];
+
+    if (tarefas.length > 0) {
+        for (const tarefa of tarefas) {
+
+            if (tarefa.prazo.getMonth() === new Date().getMonth()) {
+
+                tarefasParaHoje.innerHTML += `
+                <div class="d-flex align-items-center">
+                    <div
+                        class="d-flex flex-column align-items-center me-3 border-end border-${STATUS[tarefa.status]} border-4 pe-4">
+                        <div class="fs-2">${now.getDate()}</div>
+                        <div class>${now.toLocaleDateString('pt-BR', { weekday: 'long' }).substring(0, 3).toUpperCase()}</div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center">
+                        ${tarefa.nome}
+                    </div>
+                </div>`;
+            }
+        }
+    } else {
+        tarefasParaHoje.innerHTML += `<div class="d-flex align-items-center">Não há tarefas para hoje.</div>`
     }
 }
 
@@ -255,25 +277,32 @@ function listartarefasParaEstaSemana() {
     let tarefas = [];
 
     while (true) {
+        if (now.getDay() == 6) break;
+
         now.setDate(now.getDate() + 1);
         const r = dia_tarefas.get(now.getDate());
         if (r) tarefas = [...tarefas, ...r];
-        console.log(tarefas.length);
-
-        if (now.getDay() == 6) break;
     }
 
-    for (const tarefa of tarefas) {
-        tarefasParaEstaSemana.innerHTML += `<div class="d-flex align-items-center">
-            <div
-                class="d-flex flex-column align-items-center me-3 border-end border-${STATUS[tarefa.status]} border-4 pe-4">
-                <div class="fs-2">${tarefa.dia.getDate()}</div>
-                <div class>${tarefa.dia.toLocaleDateString('pt-BR', { weekday: 'long' }).substring(0, 3).toUpperCase()}</div>
-            </div>
-            <div class="d-flex align-items-center justify-content-center">
-                ${tarefa.nome}
-            </div>
-        </div>`;
+    if (tarefas.length > 0) {
+        for (const tarefa of tarefas) {
+
+            if (tarefa.prazo.getMonth() == new Date().getMonth()) {
+                tarefasParaEstaSemana.innerHTML += `
+                <div class="d-flex align-items-center">
+                    <div
+                        class="d-flex flex-column align-items-center me-3 border-end border-${STATUS[tarefa.status]} border-4 pe-4">
+                        <div class="fs-2">${tarefa.prazo.getDate()}</div>
+                        <div class>${tarefa.prazo.toLocaleDateString('pt-BR', { weekday: 'long' }).substring(0, 3).toUpperCase()}</div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center">
+                        ${tarefa.nome}
+                    </div>
+                </div>`;
+            }
+        }
+    } else {
+        tarefasParaEstaSemana.innerHTML += `<div class="d-flex align-items-center">Não há mais tarefas para esta semana.</div>`
     }
 }
 
