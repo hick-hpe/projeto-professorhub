@@ -42,10 +42,15 @@
                     class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                     <div
                         class="container-fluid d-flex justify-content-between">
-                        <button class="btn btn-secondary d-md-none d-inline" id="menu-toggle">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                        <h4>Painel Administrativo</h4>
+                        <div class="d-md-inline d-none">
+                            <h4>Painel Administrativo</h4>
+                        </div>
+                        <div class="d-flex d-md-none d-inline align-items-center gap-2">
+                            <button class="btn btn-secondary" id="menu-toggle">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <h4 class="mb-0">Painel Administrativo</h4>
+                        </div>
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user me-2"></i> Usuário logado
