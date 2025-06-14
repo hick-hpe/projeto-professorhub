@@ -27,10 +27,10 @@
                         <i class="fas fa-book me-2"></i> Disciplinas
                     </a>
                     <a href="{% url 'tarefas' %}" class="list-group-item p-3 list-group-item-action bg-light">
-                        <i class="fas fa-tasks me-2"></i>Tarefas
+                        <i class="fas fa-tasks me-2"></i> Tarefas
                         </a>
                     <a href="#" class="list-group-item p-3 list-group-item-action bg-light">
-                        <i class="fas fa-clipboard-list me-2"></i>Avaliações
+                        <i class="fas fa-clipboard-list me-2"></i> Avaliações
                         </a>
                 </div>
             </div>
@@ -41,9 +41,11 @@
                 <nav
                     class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                     <div
-                        class="container-fluid d-flex justify-content-sm-between justify-content-md-end">
+                        class="container-fluid d-flex justify-content-between">
                         <button class="btn btn-secondary d-md-none d-inline" id="menu-toggle">
-                            <i class="fas fa-bars"></i></button>
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h4>Painel Administrativo</h4>
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user me-2"></i> Usuário logado
@@ -74,7 +76,7 @@
                                     aria-label="Calendar View">
                                     <button type="button" class="btn btn-outline-primary">Dia</button>
                                     <button type="button" class="btn btn-outline-primary">Semana</button>
-                                    <button type="button" class="btn btn-outline-primary">Mês</button>
+                                    <button type="button" class="btn btn-outline-primary active">Mês</button>
                                 </div>
                                 <select class="form-select"aria-label="Default select example">
                                     <option value="Todas" selected>Todas</option>
