@@ -36,6 +36,10 @@ select {
     flex: 1;
 }
 
+[class*='fa-arrow'] {
+    cursor: pointer;
+}
+
 table {
     table-layout: fixed;
 }
