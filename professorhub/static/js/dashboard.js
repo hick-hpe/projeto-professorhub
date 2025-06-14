@@ -7,6 +7,9 @@ const tarefasParaHoje = document.getElementById('tarefasParaHoje');
 const tarefasParaEstaSemana = document.getElementById('tarefasParaEstaSemana');
 const iconClose = document.getElementById('icon-close');
 const select = document.querySelector('select');
+const labelDiasSemana = document.querySelectorAll('.label-dia-semana');
+const btnMesAnterior = document.getElementById('mes-anterior');
+const btnMesPosterior = document.getElementById('mes-posterior');
 
 // toggle sidebar
 toggleButton.addEventListener('click', () => {
@@ -15,6 +18,17 @@ toggleButton.addEventListener('click', () => {
 
 iconClose.addEventListener('click', () => {
     wrapper.classList.toggle('toggled');
+});
+
+// mudar mes
+btnMesAnterior.addEventListener('click', () => {
+    date.setMonth(date.getMonth() - 1);
+    construirCalendario();
+});
+
+btnMesPosterior.addEventListener('click', () => {
+    date.setMonth(date.getMonth() + 1);
+    construirCalendario();
 });
 
 // dias e as tarefas relacionadas
@@ -95,6 +109,18 @@ const TAREFAS_API = [
 
 let dia_tarefas = tarefasPorDia();
 
+const DIAS_SEMANA = {
+    'Dom': 'D',
+    'Seg': 'S',
+    'Ter': 'T',
+    'Qua': 'Q',
+    'Qui': 'Q',
+    'Sex': 'S',
+    'Sáb': 'S',
+};
+const LABELS_DIAS = Object.keys(DIAS_SEMANA);
+
+
 const STATUS = {
     'pendente': 'danger',
     'concluída': 'success',
@@ -104,9 +130,6 @@ const STATUS = {
 // primeiro dia do mes atual
 const date = new Date();
 const diaSemana = diaDaSemanaDoDia01();
-
-const mesExtenso = date.toLocaleDateString('pt-BR', { month: 'long' });
-mesAtual.innerText = mesExtenso.toUpperCase();
 
 // construir calendario
 const DIAS_NO_MES = diasNoMes(date.getMonth(), date.getFullYear());
@@ -147,8 +170,10 @@ function tarefasPorDia() {
 }
 
 
-
 function construirCalendario() {
+    const mesExtenso = date.toLocaleDateString('pt-BR', { month: 'long' });
+    mesAtual.innerText = mesExtenso.toUpperCase();
+
     const ehMobile = window.innerWidth < 576;
 
     const calendario = {
@@ -161,6 +186,7 @@ function construirCalendario() {
 function calendarioMobile() {
     console.log('calendarioMobile');
     tbody.innerHTML = '';
+    let ultimaData;
 
     let tr = document.createElement('tr');
 
@@ -169,17 +195,18 @@ function calendarioMobile() {
 
         const tarefas = dia_tarefas.get(i) || [];
 
-        const tarefasAux = tarefas.filter(tarefa => tarefa.prazo.getMonth() === new Date().getMonth());
+        const tarefasAux = tarefas.filter(tarefa => tarefa.prazo.getMonth() === date.getMonth());
         let tarefasHtml = '';
 
         if (tarefasAux.length) {
             tarefasHtml = `<div class="badge bg-primary">...</div>`;
+
         }
 
         td.className = 'border';
         td.innerHTML = `
-            <div class="text-end fw-bold">${i}</div>
-            <div class="tarefas-container">${tarefasHtml}</div>
+        <div class="text-end fw-bold">${i}</div>
+        <div class="tarefas-container">${tarefasHtml}</div>
         `;
 
         tr.appendChild(td);
@@ -190,29 +217,64 @@ function calendarioMobile() {
         }
     }
 
+    let i = 1;
+    while (tr.children.length < 7) {
+        const td = document.createElement('td');
+        td.className = 'border';
+        td.style.backgroundColor = '#ccc';
+        td.innerHTML = `<div class="text-end fw-bold">${i}</div>`;
+        tr.appendChild(td);
+        i++;
+        date.setDate(i);
+    }
+
     if (tr.children.length > 0) {
         tbody.appendChild(tr);
     }
+
+    labelDiasSemana.forEach(label => {
+        label.innerText = DIAS_SEMANA[label.innerText];
+    });
 }
 
 function calendarioDesktop() {
     console.log('calendarioDesktop');
     tbody.innerHTML = '';
 
+    const diasMesAnterior = diasNoMes(date.getMonth(), date.getFullYear());
+    console.log('diasMesAnterior:', diasMesAnterior);
+
+    let comeco = diasMesAnterior - date.getDay() + 1;
+    console.log('comeco:', comeco);
+
     let tr = document.createElement('tr');
+    for (let i = 0; i < date.getDay(); i++) {
+        const td = document.createElement('td');
+        td.className = 'border';
+        td.style.backgroundColor = '#ccc';
+        td.innerHTML = `<div class="text-end fw-bold">${comeco}</div>`;
+        tr.appendChild(td);
+        comeco++;
+    }
 
     for (let i = 1; i <= DIAS_NO_MES; i++) {
+        date.setDate(i);
+
         const td = document.createElement('td');
 
         const tarefas = dia_tarefas.get(i) || [];
 
-        const tarefasAux = tarefas.filter(tarefa => tarefa.prazo.getMonth() === new Date().getMonth());
+        const tarefasAux = tarefas.filter(tarefa => tarefa.prazo.getMonth() === date.getMonth());
         let tarefasHtml = '';
 
         if (tarefasAux.length) {
             tarefasHtml = tarefasAux.map(tarefa => `
                 <div class="badge bg-${STATUS[tarefa.status]}">${tarefa.nome}</div>
             `).join('');
+
+            tarefasAux.forEach(tarefa => {
+                if (tarefa.prazo) ultimaDiaDaSemana = tarefa.prazo.getDay();
+            });
         }
 
         td.className = 'border';
@@ -223,15 +285,30 @@ function calendarioDesktop() {
 
         tr.appendChild(td);
 
-        if (i % 7 === 0) {
+        if (tr.children.length == 7) {
             tbody.appendChild(tr);
             tr = document.createElement('tr');
         }
     }
 
+    let i = 1;
+    while (tr.children.length < 7) {
+        const td = document.createElement('td');
+        td.className = 'border';
+        td.style.backgroundColor = '#ccc';
+        td.innerHTML = `<div class="text-end fw-bold">${i}</div>`;
+        tr.appendChild(td);
+        i++;
+        date.setDate(i);
+    }
+
     if (tr.children.length > 0) {
         tbody.appendChild(tr);
     }
+
+    labelDiasSemana.forEach((label, index) => {
+        label.innerText = LABELS_DIAS[index];
+    });
 }
 
 // select disciplinas
@@ -251,7 +328,7 @@ function listarTarefasParaHoje() {
     if (tarefas.length > 0) {
         for (const tarefa of tarefas) {
 
-            if (tarefa.prazo.getMonth() === new Date().getMonth()) {
+            if (tarefa.prazo.getMonth() === date.getMonth()) {
 
                 tarefasParaHoje.innerHTML += `
                 <div class="d-flex align-items-center">
@@ -287,7 +364,7 @@ function listartarefasParaEstaSemana() {
     if (tarefas.length > 0) {
         for (const tarefa of tarefas) {
 
-            if (tarefa.prazo.getMonth() == new Date().getMonth()) {
+            if (tarefa.prazo.getMonth() == date.getMonth()) {
                 tarefasParaEstaSemana.innerHTML += `
                 <div class="d-flex align-items-center">
                     <div
