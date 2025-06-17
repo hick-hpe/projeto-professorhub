@@ -10,6 +10,8 @@ const select = document.querySelector('select');
 const labelDiasSemana = document.querySelectorAll('.label-dia-semana');
 const btnMesAnterior = document.getElementById('mes-anterior');
 const btnMesPosterior = document.getElementById('mes-posterior');
+const modalElement = document.getElementById('exampleModal');
+const modal = new bootstrap.Modal(modalElement);
 
 // Sidebar toggle
 toggleButton.addEventListener('click', () => wrapper.classList.toggle('toggled'));
@@ -22,11 +24,10 @@ const STATUS = {
     'em andamento': 'warning',
 };
 
-const DIAS_SEMANA = {
-    'Dom': 'D', 'Seg': 'S', 'Ter': 'T', 'Qua': 'Q', 'Qui': 'Q', 'Sex': 'S', 'Sáb': 'S',
-};
+const DIAS_SEMANA = [
+    'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'
+];
 
-const LABELS_DIAS = Object.keys(DIAS_SEMANA);
 const date = new Date();
 
 // Dados de tarefas (mock)
@@ -168,9 +169,10 @@ function calendarioMobile() {
     }
     if (tr.children.length > 0) tbody.appendChild(tr);
 
-    labelDiasSemana.forEach(label => {
-        label.innerText = DIAS_SEMANA[label.innerText];
+    labelDiasSemana.forEach((label, index) => {
+        label.innerText = DIAS_SEMANA[index].substring(0, 1);
     });
+
 }
 
 function calendarioDesktop() {
@@ -200,6 +202,10 @@ function calendarioDesktop() {
             <div class="text-end fw-bold">${i}</div>
             <div class="tarefas-container">${tarefasHtml}</div>
         `;
+        td.addEventListener('click', () => {
+            console.log('clicou no td de número', i);
+            abrirModalComInformacoes(i);
+        });
 
         tr.appendChild(td);
         if (tr.children.length === 7) {
@@ -207,6 +213,9 @@ function calendarioDesktop() {
             tr = document.createElement('tr');
         }
     }
+
+    console.log('tbody:', tbody);
+    console.log('tr:', tr);
 
     let diaPosterior = 1;
     while (tr.children.length < 7) {
@@ -218,7 +227,7 @@ function calendarioDesktop() {
     tbody.appendChild(tr);
 
     labelDiasSemana.forEach((label, index) => {
-        label.innerText = LABELS_DIAS[index];
+        label.innerText = DIAS_SEMANA[index];
     });
 }
 
@@ -252,7 +261,14 @@ function listartarefasParaEstaSemana() {
 
     const tarefas = [];
 
-    for (const [dia, lista] of dia_tarefas.entries()) {
+    const ordenado = [...dia_tarefas.entries()].sort((a, b) => {
+        const diaA = a[0];
+        const diaB = b[0];
+
+        return diaA - diaB;
+    });
+
+    for (const [dia, lista] of ordenado) {
         lista.forEach(tarefa => {
             const prazo = tarefa.prazo;
             if (prazo >= now && prazo <= fimSemana && prazo.getMonth() === date.getMonth()) {
@@ -298,3 +314,59 @@ window.addEventListener('resize', () => construirCalendario());
 // Inicialização
 let dia_tarefas = tarefasPorDia();
 construirCalendario();
+
+// function ordenarTarefasPorTempo() {
+//     let tarefas_ordenadas = {};
+//     const chaves_ordenadas = Object.keys(dia_tarefas).sort((a, b) => a - b);
+//     for (const chave of chaves_ordenadas) {
+//         tarefas_ordenadas[chave] = d[chave];
+//     }
+//     return tarefas_ordenadas;
+// }
+
+function abrirModalComInformacoes(dia) {
+    console.log('Tarefa do dia: ' + 1);
+    const tarefas = dia_tarefas.get(dia) || [];
+
+    // preencher modal com informações
+    const modalBody = document.querySelector('#exampleModal .modal-body');
+    const diaTarefaModal = document.querySelector('#dia-tarefa-modal');
+    console.log('diaTarefaModal:',diaTarefaModal);
+    diaTarefaModal.innerHTML = dia;
+
+    if (tarefas.length > 0) {
+
+        modalBody.innerHTML = '<ul class="list-group">' +
+            tarefas.map(tarefa => {
+                let statusClass = '';
+
+                // Define a cor conforme o status
+                switch (tarefa.status) {
+                    case 'concluída':
+                        statusClass = 'list-group-item-success';
+                        break;
+                    case 'em andamento':
+                        statusClass = 'list-group-item-warning';
+                        break;
+                    case 'pendente':
+                        statusClass = 'list-group-item-danger';
+                        break;
+                    default:
+                        statusClass = '';
+                }
+
+                return `
+                    <li class="list-group-item ${statusClass}">
+                        <div><strong>${tarefa.nome}</strong></div>
+                        <div><small>Disciplina: ${tarefa.disciplina}</small></div>
+                        <div><small>Status: ${tarefa.status}</small></div>
+                    </li>
+                `;
+            }).join('') +
+            '</ul>';
+    } else {
+        modalBody.innerHTML = '<div class="alert alert-info">Não há tarefas para este dia!!!</div>';
+    }
+
+    modal.show();
+}
