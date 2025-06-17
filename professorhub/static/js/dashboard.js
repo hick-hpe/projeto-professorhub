@@ -160,6 +160,9 @@ function calendarioMobile() {
             <div class="text-end fw-bold">${i}</div>
             <div class="tarefas-container">${tarefas.length ? '<div class="badge bg-primary">...</div>' : ''}</div>
         `;
+        td.addEventListener('click', () => {
+            abrirModalComInformacoes(i);
+        });
         tr.appendChild(td);
 
         if (tr.children.length === 7) {
@@ -203,7 +206,6 @@ function calendarioDesktop() {
             <div class="tarefas-container">${tarefasHtml}</div>
         `;
         td.addEventListener('click', () => {
-            console.log('clicou no td de número', i);
             abrirModalComInformacoes(i);
         });
 
